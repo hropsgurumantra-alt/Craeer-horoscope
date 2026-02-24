@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Career Horoscope | GuruMantra4U</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-dim: #B8960C;
+    --purple: #7B2FBE;
+    --purple-deep: #2D0A5E;
+    --cosmic: #0B0618;
+    --stardust: #E8D5FF;
+    --accent: #FF6B6B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cosmic);
+    font-family: 'Crimson Pro', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── STARFIELD ── */
+  #stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.1; transform: scale(0.8); }
+    to   { opacity: 1;   transform: scale(1.2); }
+  }
+
+  /* ── NEBULA BG ── */
+  .nebula {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(123,47,190,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 35% at 80% 70%, rgba(45,10,94,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 60% 20%, rgba(255,107,107,0.08) 0%, transparent 60%);
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* ── HEADER ── */
+  .brand {
+    text-align: center;
+    padding: 18px 0 8px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--purple);
+    text-transform: uppercase;
+  }
+  .brand span { color: var(--gold); }
+
+  .hero {
+    text-align: center;
+    padding: 20px 0 10px;
+  }
+  .stars-row {
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    from { text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+    to   { text-shadow: 0 0 25px rgba(255,215,0,0.9), 0 0 50px rgba(255,215,0,0.4); }
+  }
+
+  h1 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(22px, 5vw, 40px);
+    color: var(--gold);
+    line-height: 1.2;
+    margin: 12px 0 8px;
+    text-shadow: 0 0 40px rgba(255,215,0,0.5);
+  }
+  .subtitle {
+    font-size: 16px;
+    color: var(--stardust);
+    font-style: italic;
+    opacity: 0.85;
+  }
+  .disclaimer {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 6px;
+  }
+
+  /* ── STEP 1: SIGN PICKER ── */
+  #step-pick { animation: fadeUp 0.7s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .pick-label {
+    text-align: center;
+    font-size: 18px;
+    color: var(--stardust);
+    margin: 28px 0 18px;
+    letter-spacing: 1px;
+  }
+  .pick-label span { color: var(--gold); font-weight: 600; }
+
+  .signs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .sign-card {
+    background: rgba(123,47,190,0.12);
+    border: 1px solid rgba(123,47,190,0.35);
+    border-radius: 14px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .sign-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(255,215,0,0.08) 0%, transparent 70%);
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .sign-card:hover { border-color: var(--gold); transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 30px rgba(255,215,0,0.2); }
+  .sign-card:hover::before { opacity: 1; }
+
+  .sign-symbol { font-size: 28px; display: block; }
+  .sign-name { font-family: 'Cinzel Decorative', cursive; font-size: 9px; color: var(--gold); margin: 4px 0 2px; letter-spacing: 1px; }
+  .sign-dates { font-size: 9px; color: rgba(255,255,255,0.45); }
+
+  /* ── STEP 2: CRYSTAL BALL REVEAL ── */
+  #step-reveal { display: none; animation: fadeUp 0.6s ease both; }
+
+  .crystal-wrap {
+    display: flex; justify-content: center;
+    margin: 30px 0 20px;
+  }
+  .crystal-ball {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%,
+      rgba(255,255,255,0.55) 0%,
+      rgba(123,47,190,0.6) 30%,
+      rgba(45,10,94,0.9) 70%,
+      rgba(11,6,24,1) 100%
+    );
+    box-shadow:
+      0 0 40px rgba(123,47,190,0.7),
+      0 0 80px rgba(123,47,190,0.3),
+      inset 0 0 30px rgba(255,215,0,0.15);
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50%      { transform: translateY(-10px) rotate(2deg); }
+  }
+  .crystal-ball::after {
+    content: '';
+    position: absolute; top: 18%; left: 22%;
+    width: 28%; height: 18%;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    filter: blur(3px);
+  }
+
+  /* result card */
+  .result-card {
+    background: linear-gradient(135deg, rgba(45,10,94,0.7) 0%, rgba(11,6,24,0.9) 100%);
+    border: 1px solid rgba(255,215,0,0.4);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(123,47,190,0.3);
+  }
+  .result-card::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent 0%, rgba(255,215,0,0.03) 25%, transparent 50%);
+    animation: spin 8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .result-sign {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 12px rgba(255,215,0,0.6));
+  }
+  .result-sign-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .destiny-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--purple);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .destiny-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(16px, 4vw, 26px);
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(255,215,0,0.5);
+    margin-bottom: 18px;
+    line-height: 1.3;
+  }
+
+  .divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 18px;
+  }
+
+  .prophecy {
+    font-size: 16px;
+    color: var(--stardust);
+    line-height: 1.75;
+    font-style: italic;
+    margin-bottom: 18px;
+    position: relative; z-index: 1;
+  }
+
+  .skills-wrap {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .skill-tag {
+    background: rgba(123,47,190,0.3);
+    border: 1px solid rgba(123,47,190,0.6);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--stardust);
+    letter-spacing: 0.5px;
+  }
+
+  .warning-box {
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #FFB3B3;
+    position: relative; z-index: 1;
+  }
+  .warning-box strong { color: var(--accent); }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold) 0%, #FF9500 100%);
+    color: #1a0a00;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 14px 32px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(255,215,0,0.35);
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255,215,0,0.55);
+  }
+
+  .btn-ghost {
+    display: inline-block;
+    background: transparent;
+    color: var(--stardust);
+    font-family: 'Crimson Pro', serif;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin-top: 10px;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .btns-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    margin-top: 36px;
+    background: linear-gradient(135deg, rgba(123,47,190,0.25), rgba(255,107,107,0.1));
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .cta-section h3 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 16px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .cta-section p {
+    font-size: 15px;
+    color: var(--stardust);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .wa-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #25D366;
+    color: white;
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+  }
+  .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,211,102,0.5); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 30px 0 10px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+
+  /* ── SHARE ROW ── */
+  .share-row {
+    display: flex; justify-content: center; gap: 10px;
+    margin-top: 16px; flex-wrap: wrap;
+  }
+  .share-btn {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+    padding: 8px 18px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Crimson Pro', serif;
+  }
+  .share-btn:hover { background: rgba(255,215,0,0.15); border-color: var(--gold); }
+
+  @media(max-width: 480px) {
+    .signs-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .sign-card { padding: 10px 4px; }
+    .sign-symbol { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div class="nebula"></div>
+
+<div class="container">
+
+  <div class="brand">✦ <span>GuruMantra4U</span> · Career Guidance & Tech Training ✦</div>
+
+  <div class="hero">
+    <div class="stars-row">★ ✦ ★ ✦ ★</div>
+    <h1>Your Tech Career<br>Horoscope</h1>
+    <p class="subtitle">The cosmos has assigned you a tech destiny.<br>Are you ready to discover it?</p>
+    <p class="disclaimer">(100% scientifically accurate* &nbsp;·&nbsp; *not really, but the career advice IS real!)</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="step-pick">
+    <p class="pick-label">Choose your <span>zodiac sign</span> to reveal your destiny 🔮</p>
+    <div class="signs-grid" id="signsGrid"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step-reveal">
+    <div class="crystal-wrap">
+      <div class="crystal-ball" id="crystalEmoji">🔮</div>
+    </div>
+    <div class="result-card" id="resultCard">
+      <span class="result-sign" id="rSymbol"></span>
+      <div class="result-sign-name" id="rSignName"></div>
+      <div class="destiny-label">✦ Your Tech Destiny ✦</div>
+      <div class="destiny-title" id="rCareer"></div>
+      <div class="divider"></div>
+      <p class="prophecy" id="rDesc"></p>
+      <div class="warning-box" id="rWarning"></div>
+      <div class="skills-wrap" id="rSkills"></div>
+      <div class="btns-row">
+        <button class="btn-primary" onclick="tryAgain()">🔮 Try Another Sign</button>
+        <div class="share-row">
+          <button class="share-btn" onclick="shareResult()">📤 Share My Destiny</button>
+          <button class="share-btn" onclick="copyLink()">🔗 Copy Link</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h3>The Stars Say You Need Guidance!</h3>
+      <p>Your destiny is written — but only the right skills will get you there.<br>Chat with our FREE AI Career Bot right now!</p>
+      <a class="wa-btn" href="https://wa.me/91XXXXXXXXXX?text=HOROSCOPE" target="_blank">
+        <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp 'CAREER' to us
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    ✦ GuruMantra4U · Career Guidance & Tech Training ✦<br>
+    <span style="font-size:10px; opacity:0.5;">gurumantra4u.com</span>
+  </footer>
+
+</div>
+
+<script>
+const horoscopes = [
+  { symbol:"♈", name:"Aries", dates:"Mar 21 – Apr 19", career:"Full Stack Developer",
+    desc:"Your fire drives you to BUILD things from scratch. You'll create apps that millions use — and you'll be proud of every pixel. Your energy is unstoppable once you start.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> Beware of Tutorial Hell — you'll start 10 courses and finish exactly zero of them. Channel that fire into ONE project!",
+    skills:["React","Node.js","MongoDB","REST APIs","Git"] },
+  { symbol:"♉", name:"Taurus", dates:"Apr 20 – May 20", career:"Data Engineer",
+    desc:"Stubborn and reliable — you are the backbone of every tech team. You will build data pipelines that process millions of records without breaking a sweat.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll spend 3 days perfecting a SQL query that runs in 2ms vs 3ms. Sometimes done is better than perfect, dear Taurus.",
+    skills:["Python","SQL","Apache Spark","ETL","PostgreSQL"] },
+  { symbol:"♊", name:"Gemini", dates:"May 21 – Jun 20", career:"UI/UX Designer",
+    desc:"Your dual nature lets you see both the user's feelings AND the business goals at the same time. You will design apps that people fall in love with at first tap.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll redesign the same button 11 times. Pick a colour and ship it, Gemini. The world is waiting!",
+    skills:["Figma","Adobe XD","User Research","Prototyping","Design Systems"] },
+  { symbol:"♋", name:"Cancer", dates:"Jun 21 – Jul 22", career:"Product Manager",
+    desc:"Deeply empathetic, you understand what users FEEL before they even say it. PMs like you build products that don't just sell — they change lives.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll say yes to every feature request because you don't want to hurt anyone's feelings. Learn the sacred word: 'No.'",
+    skills:["Agile","Jira","User Research","Roadmapping","Stakeholder Mgmt"] },
+  { symbol:"♌", name:"Leo", dates:"Jul 23 – Aug 22", career:"Tech Entrepreneur",
+    desc:"You won't just code — you'll FOUND the company. Your confidence, charisma and roaring ambition will raise funding before your MVP is even ready.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll put 'Serial Entrepreneur' on LinkedIn before building your first product. Ship first, flex later, Leo.",
+    skills:["Leadership","Pitch Decks","Vision","Networking","Go-to-Market"] },
+  { symbol:"♍", name:"Virgo", dates:"Aug 23 – Sep 22", career:"Cybersecurity Analyst",
+    desc:"Detail-obsessed and sharp as a blade — you spot vulnerabilities others miss entirely. You will be the one who saves companies from million-dollar hacks.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll find a bug in every system you look at — including systems you're not paid to test. Try to relax... just a little.",
+    skills:["Ethical Hacking","Linux","VAPT","Wireshark","Python Scripting"] },
+  { symbol:"♎", name:"Libra", dates:"Sep 23 – Oct 22", career:"AI/ML Engineer",
+    desc:"Always seeking balance between data and decisions — Artificial Intelligence is literally your calling. You will train models smarter than your professors.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll spend weeks choosing between TensorFlow and PyTorch instead of building the actual model. Just pick one, Libra!",
+    skills:["Python","TensorFlow","Machine Learning","Statistics","Data Analysis"] },
+  { symbol:"♏", name:"Scorpio", dates:"Oct 23 – Nov 21", career:"Cloud Architect",
+    desc:"Mysterious and powerful — just like the cloud itself. You will build invisible infrastructure that powers entire companies. Silently. Powerfully. Perfectly.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll over-engineer a 3-tier architecture for a todo app. Not every problem needs Kubernetes, Scorpio.",
+    skills:["AWS","Azure","DevOps","Docker","Terraform"] },
+  { symbol:"♐", name:"Sagittarius", dates:"Nov 22 – Dec 21", career:"Mobile App Developer",
+    desc:"Always on the move — mobile is your world! You will build the next viral app while sitting in a café in Bangalore, laptop balanced on your knees.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll have 7 half-finished app ideas on your GitHub. The stars beg you: finish ONE before starting the next!",
+    skills:["Flutter","Dart","Firebase","React Native","App Store Deployment"] },
+  { symbol:"♑", name:"Capricorn", dates:"Dec 22 – Jan 19", career:"Software Architect",
+    desc:"Patient, disciplined, always thinking 10 years ahead — you are born to design systems that run for decades without ever breaking down.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll document your code more than you write it. Your README will be longer than the actual project. And it'll be BEAUTIFUL.",
+    skills:["System Design","Java","Microservices","AWS","Design Patterns"] },
+  { symbol:"♒", name:"Aquarius", dates:"Jan 20 – Feb 18", career:"Blockchain Developer",
+    desc:"Rebel, visionary, ahead of your time by at least 5 years — Web3 is your universe. You will build decentralized apps before others even understand what 'decentralized' means.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll explain blockchain to everyone at every party whether they asked or not. The stars suggest reading the room occasionally.",
+    skills:["Solidity","Web3.js","Ethereum","Smart Contracts","DeFi"] },
+  { symbol:"♓", name:"Pisces", dates:"Feb 19 – Mar 20", career:"Data Scientist",
+    desc:"Dreamy and deeply intuitive — you see patterns in data that nobody else notices. Your machine learning models will predict futures others can't even imagine.",
+    warning:"<strong>⚠ Cosmic Warning:</strong> You'll drown in exploratory data analysis for so long that you forget to build the model. Set a deadline, dear Pisces.",
+    skills:["Python","R","Machine Learning","Data Visualization","Statistics"] },
+];
+
+// Build star field
+const starsEl = document.getElementById('stars');
+for(let i=0;i<120;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  s.style.cssText=`width:${Math.random()*2.5+0.5}px;height:${Math.random()*2.5+0.5}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+2).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+  starsEl.appendChild(s);
+}
+
+// Build sign grid
+const grid = document.getElementById('signsGrid');
+horoscopes.forEach((h,i) => {
+  const div = document.createElement('div');
+  div.className = 'sign-card';
+  div.innerHTML = `<span class="sign-symbol">${h.symbol}</span><div class="sign-name">${h.name}</div><div class="sign-dates">${h.dates}</div>`;
+  div.onclick = () => showResult(i);
+  grid.appendChild(div);
+});
+
+function showResult(idx) {
+  const h = horoscopes[idx];
+  document.getElementById('step-pick').style.display = 'none';
+  const rev = document.getElementById('step-reveal');
+  rev.style.display = 'block';
+
+  document.getElementById('crystalEmoji').textContent = h.symbol;
+  document.getElementById('rSymbol').textContent = h.symbol;
+  document.getElementById('rSignName').textContent = h.name.toUpperCase() + '  ·  ' + h.dates;
+  document.getElementById('rCareer').textContent = h.career;
+  document.getElementById('rDesc').textContent = h.desc;
+  document.getElementById('rWarning').innerHTML = h.warning;
+
+  const sw = document.getElementById('rSkills');
+  sw.innerHTML = '';
+  h.skills.forEach(s => {
+    const t = document.createElement('span');
+    t.className='skill-tag'; t.textContent=s;
+    sw.appendChild(t);
+  });
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function tryAgain() {
+  document.getElementById('step-reveal').style.display = 'none';
+  document.getElementById('step-pick').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function shareResult() {
+  if(navigator.share) {
+    navigator.share({
+      title: 'My Tech Career Horoscope!',
+      text: 'I just discovered my Tech Career Destiny! Find yours at GuruMantra4U 🔮✨',
+      url: window.location.href
+    });
+  } else {
+    copyLink();
+  }
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    alert('Link copied! Share it with your friends 🔮');
+  });
+}
+</script>
+</body>
+</html>
